@@ -11,7 +11,7 @@
       "id": "1744464593938",
       "full_name": "Hoang Tien Dat",
       "email": "test1@gmail.com",
-      "password": "123456",
+      "password": "1234567",
       "theme": "light"
     }
   ],
@@ -37,7 +37,7 @@
       "category_id": "1",
       "is_hot": true,
       "is_favourite": true,
-      "viewed_at": "2025-04-12T14:35:33.778Z",
+      "viewed_at": "2025-04-12T21:01:04.827Z",
       "created_at": "2025-03-25T10:00:00Z"
     },
     {
@@ -49,7 +49,7 @@
       "category_id": "2",
       "is_hot": false,
       "is_favourite": false,
-      "viewed_at": "2025-04-12T14:27:41.678Z",
+      "viewed_at": "2025-04-12T19:46:42.898Z",
       "created_at": "2025-03-25T11:00:00Z"
     },
     {
@@ -60,8 +60,8 @@
       "image": "https://i.pinimg.com/736x/56/cf/a2/56cfa233aca065e52bb6895bd7b036f6.jpg",
       "category_id": "2",
       "is_hot": true,
-      "is_favourite": false,
-      "viewed_at": "2025-04-12T14:35:19.580Z",
+      "is_favourite": true,
+      "viewed_at": "2025-04-12T19:21:12.190Z",
       "created_at": "2025-03-25T11:00:00Z"
     },
     {
@@ -73,7 +73,7 @@
       "category_id": "1",
       "is_hot": false,
       "is_favourite": false,
-      "viewed_at": "2025-04-12T07:46:38.388Z",
+      "viewed_at": "2025-04-12T16:54:21.353Z",
       "created_at": "2025-03-25T11:00:00Z"
     },
     {
@@ -84,8 +84,8 @@
       "image": "https://i.pinimg.com/474x/c5/b7/7f/c5b77fda688ad986a5e8cd73a67a494c.jpg",
       "category_id": "1",
       "is_hot": false,
-      "is_favourite": false,
-      "viewed_at": "",
+      "is_favourite": true,
+      "viewed_at": "2025-04-12T16:21:16.778Z",
       "created_at": "2025-03-25T11:00:00Z"
     },
     {
@@ -96,8 +96,8 @@
       "image": "https://i.pinimg.com/474x/c3/89/81/c38981d19a82e6093fbc2cfb85ad01f1.jpg",
       "category_id": "2",
       "is_hot": true,
-      "is_favourite": true,
-      "viewed_at": "",
+      "is_favourite": false,
+      "viewed_at": "2025-04-12T16:11:53.847Z",
       "created_at": "2025-03-25T11:00:00Z"
     }
   ],
@@ -106,31 +106,119 @@
       "id": "1",
       "user_id": "1",
       "total_price": 5.48,
-      "status": "Completed",
-      "created_at": "2025-03-24T12:00:00Z"
+      "status": "Đang xử lý",
+      "created_at": "2025-03-24T12:00:00Z",
+      "nameOrder": "Nguyen Van A",
+      "addressOrder": "Hà Nội",
+      "phoneOrder": "0978965383",
+      "order": [
+        {
+          "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
+          "name": "Apple",
+          "price": 1.99,
+          "quantity": 21
+        },
+        {
+          "image": "https://i.pinimg.com/736x/e5/2b/6f/e52b6fa6e0527d244e6eb838f6c7cd70.jpg",
+          "name": "Orange Juice",
+          "price": 3.49,
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "id": "8c00",
+      "user_id": "1744464593938",
+      "total_price": 12.46,
+      "status": "Đang xử lý",
+      "created_at": "2025-04-12T16:52:25.779Z",
+      "nameOrder": "Hoang Tien Dat",
+      "addressOrder": "Baba",
+      "phoneOrder": "234234",
+      "order": [
+        {
+          "image": "https://i.pinimg.com/736x/e5/2b/6f/e52b6fa6e0527d244e6eb838f6c7cd70.jpg",
+          "name": "Orange Juice",
+          "price": 3.49,
+          "quantity": 3
+        },
+        {
+          "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
+          "name": "Apple",
+          "price": 1.99,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "bfcd",
+      "user_id": "1744464593938",
+      "total_price": 8.46,
+      "status": "Đang xử lý",
+      "created_at": "2025-04-12T16:54:29.513Z",
+      "nameOrder": "Hoang Tien Dat",
+      "addressOrder": "Ha Ha",
+      "phoneOrder": "2834",
+      "order": [
+        {
+          "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
+          "name": "Apple",
+          "price": 1.99,
+          "quantity": 3
+        },
+        {
+          "image": "https://i.pinimg.com/736x/48/af/1d/48af1ddf2184fc64b8e5ba8804244927.jpg",
+          "name": "Ginger",
+          "price": 2.49,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "ff6f",
+      "user_id": "1",
+      "total_price": 18.93,
+      "status": "Đang xử lý",
+      "created_at": "2025-04-12T16:59:46.359Z",
+      "nameOrder": "Nguyen Van A",
+      "addressOrder": "Phan Van Truong, Cau Giay",
+      "phoneOrder": "0916604848",
+      "order": [
+        {
+          "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
+          "name": "Apple",
+          "price": 1.99,
+          "quantity": 3
+        },
+        {
+          "image": "https://i.pinimg.com/736x/e5/2b/6f/e52b6fa6e0527d244e6eb838f6c7cd70.jpg",
+          "name": "Orange Juice",
+          "price": 3.49,
+          "quantity": 3
+        },
+        {
+          "image": "https://i.pinimg.com/474x/c5/b7/7f/c5b77fda688ad986a5e8cd73a67a494c.jpg",
+          "name": "Banana",
+          "price": 2.49,
+          "quantity": 1
+        }
+      ]
     }
   ],
   "cart": [
     {
-      "id": "1",
-      "user_id": "1",
-      "product_id": "1",
-      "quantity": 21,
-      "price": 1.99
-    },
-    {
-      "id": "9a3d",
-      "user_id": "1",
-      "product_id": "2",
-      "quantity": 3,
-      "price": 3.49
-    },
-    {
-      "id": "712e",
+      "id": "c475",
       "user_id": "1744464593938",
       "product_id": "1",
-      "quantity": 2,
+      "quantity": 3,
       "price": 1.99
+    },
+    {
+      "id": "9761",
+      "user_id": "1744464593938",
+      "product_id": "2",
+      "quantity": 1,
+      "price": 3.49
     }
   ],
   "comments": [
@@ -165,6 +253,14 @@
       "comment": "Khá Ngon đó",
       "rating": 3,
       "created_at": "2025-04-12T14:31:47.690Z"
+    },
+    {
+      "id": "eac2",
+      "product_id": "2",
+      "user_id": "1744464593938",
+      "comment": "Ngon nha",
+      "rating": 4,
+      "created_at": "2025-04-12T15:56:12.134Z"
     }
   ],
   "banner": [
@@ -187,6 +283,30 @@
       "user_id": "1",
       "message": "You have a new message",
       "created_at": "2025-03-25T13:00:00Z"
+    },
+    {
+      "id": "262f",
+      "user_id": "1744464593938",
+      "message": "Bạn đã đặt hàng thành công !!",
+      "created_at": "2025-04-12T16:50:41.869Z"
+    },
+    {
+      "id": "92ca",
+      "user_id": "1744464593938",
+      "message": "Bạn đã đặt hàng thành công !!",
+      "created_at": "2025-04-12T16:52:25.794Z"
+    },
+    {
+      "id": "b469",
+      "user_id": "1744464593938",
+      "message": "Bạn đã đặt hàng thành công !!",
+      "created_at": "2025-04-12T16:54:29.521Z"
+    },
+    {
+      "id": "1ece",
+      "user_id": "1",
+      "message": "Bạn đã đặt hàng thành công !!",
+      "created_at": "2025-04-12T16:59:46.381Z"
     }
   ]
 }

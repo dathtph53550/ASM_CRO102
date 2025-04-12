@@ -6,6 +6,7 @@ type UserContextType = {
   user: UserType | null;
   login: (userData: UserType) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (userData: UserType) => Promise<void>;
   isLoading: boolean;
 };
 
@@ -44,6 +45,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUser = async (userData: UserType) => {
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('user');
@@ -55,7 +66,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout, isLoading }}>
+    <UserContext.Provider value={{ user, login, logout, updateUser, isLoading }}>
       {children}
     </UserContext.Provider>
   );

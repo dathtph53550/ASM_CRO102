@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { login } from '../services/api';
 import { Product } from '../types/product';
 import { useUser } from '../context/UserContext';
+import { useTheme } from '../components/ThemeProvider';
 
 type RootStackParamList = {
   Login: undefined;
@@ -15,6 +16,7 @@ type RootStackParamList = {
     user: { id: number; full_name: string; email: string; } 
   };
   Register: undefined;
+  AdminScreen: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -26,6 +28,7 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login: userLogin } = useUser();
+  const { theme, isDarkMode } = useTheme();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -35,6 +38,16 @@ export default function LoginScreen() {
 
     setIsLoading(true);
     try {
+      // Kiểm tra nếu là tài khoản admin
+      if (email === 'admin' && password === 'admin') {
+        // Chuyển hướng đến màn hình AdminScreen
+        setTimeout(() => {
+          setIsLoading(false);
+          navigation.navigate('AdminScreen');
+        }, 1000);
+        return;
+      }
+      
       const user = await login(email, password);
       if (user) {
         // Use the UserContext to store user data
@@ -44,7 +57,7 @@ export default function LoginScreen() {
         Alert.alert('Lỗi', 'Email hoặc mật khẩu không đúng');
       }
     } catch (error) {
-      console.error('Login error:', error);
+      // console.error('Login error:', error);
       Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
     } finally {
       setIsLoading(false);
@@ -52,39 +65,41 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
       <View style={styles.content}>
         <Image 
           source={require('../../assets/images/carrot1.png')} 
           style={styles.logo}
         />
 
-        <Text style={styles.title}>Login</Text>
-        <Text style={styles.subtitle}>Enter your email and password</Text>
+        <Text style={[styles.title, { color: theme.textColor }]}>Login</Text>
+        <Text style={[styles.subtitle, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Enter your email and password</Text>
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={[styles.label, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Email</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: theme.textColor, borderBottomColor: isDarkMode ? '#444' : '#E2E2E2' }]}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
               placeholder="Vui lòng nhập email "
+              placeholderTextColor={isDarkMode ? '#666' : '#BDBDBD'}
               editable={!isLoading}
             />
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Password</Text>
+            <Text style={[styles.label, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Password</Text>
             <View style={styles.passwordContainer}>
               <TextInput
-                style={[styles.input, styles.passwordInput]}
+                style={[styles.input, styles.passwordInput, { color: theme.textColor, borderBottomColor: isDarkMode ? '#444' : '#E2E2E2' }]}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 placeholder="• • • • • • • •"
+                placeholderTextColor={isDarkMode ? '#666' : '#BDBDBD'}
                 editable={!isLoading}
               />
               <TouchableOpacity 
@@ -102,7 +117,7 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            <Text style={[styles.forgotPasswordText, { color: isDarkMode ? '#999' : '#181725' }]}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
@@ -118,10 +133,14 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
+            <Text style={[styles.signupText, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
               <Text style={styles.signupLink}>Register</Text>
             </TouchableOpacity>
+          </View>
+          
+          <View style={styles.adminHint}>
+            <Text style={[styles.adminHintText, { color: isDarkMode ? '#666' : '#BDBDBD' }]}>Admin login: email="admin", password="admin"</Text>
           </View>
         </View>
       </View>
@@ -132,7 +151,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
@@ -220,5 +238,13 @@ const styles = StyleSheet.create({
   },
   loginButtonDisabled: {
     opacity: 0.7,
+  },
+  adminHint: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  adminHintText: {
+    fontSize: 12,
+    fontStyle: 'italic',
   },
 });

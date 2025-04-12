@@ -3,7 +3,7 @@ import { View, StyleSheet, FlatList, Image, TouchableOpacity, SafeAreaView, Text
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import { Product, Comment } from '../types/product';
-import { fetchComments, addToCart } from '../services/api';
+import { fetchComments, addToCart, toggleFavoriteStatus } from '../services/api';
 import CommentSection from '../components/CommentSection';
 import { RootStackParamList } from '../types/navigation';
 import { FontAwesome } from '@expo/vector-icons';
@@ -16,9 +16,12 @@ export default function DetailScreen({ route, navigation }: DetailScreenProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const { user: currentUser } = useUser();
 
-  const { product, user: routeUser } = route.params || {};
+  const { product: initialProduct, user: routeUser } = route.params || {};
+  const [product, setProduct] = useState(initialProduct);
+  const [isFavorite, setIsFavorite] = useState(initialProduct?.is_favourite || false);
 
   const loadComments = useCallback(async () => {
     if (!product) return;
@@ -32,12 +35,44 @@ export default function DetailScreen({ route, navigation }: DetailScreenProps) {
   }, [product]);
 
   useEffect(() => {
-    console.log(routeUser)
+    // Ensure favorite status is always in sync with product data
+    if (product) {
+      setIsFavorite(!!product.is_favourite);
+    }
     loadComments();
-  }, [loadComments, routeUser]);
+  }, [loadComments, product]);
 
-  const handleIncrement = () => setQuantity(prev => prev + 1);
-  const handleDecrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  const handleIncrement = useCallback(() => setQuantity(prev => prev + 1), []);
+  const handleDecrement = useCallback(() => setQuantity(prev => (prev > 1 ? prev - 1 : 1)), []);
+  
+  const handleToggleFavorite = useCallback(async () => {
+    if (!product || isTogglingFavorite) return;
+    
+    // Update UI immediately for better user experience
+    const newFavoriteStatus = !isFavorite;
+    setIsFavorite(newFavoriteStatus);
+    setProduct(prev => prev ? { ...prev, is_favourite: newFavoriteStatus } : prev);
+    
+    setIsTogglingFavorite(true);
+    try {
+      if (product) {
+        const success = await toggleFavoriteStatus(product.id, newFavoriteStatus);
+        
+        if (!success) {
+          // Revert UI if API call fails
+          setIsFavorite(!newFavoriteStatus);
+          setProduct(prev => prev ? { ...prev, is_favourite: !newFavoriteStatus } : prev);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      // Revert UI on error
+      setIsFavorite(!newFavoriteStatus);
+      setProduct(prev => prev ? { ...prev, is_favourite: !newFavoriteStatus } : prev);
+    } finally {
+      setIsTogglingFavorite(false);
+    }
+  }, [product, isFavorite, isTogglingFavorite]);
   
   const handleAddToCart = async () => {
     if (!product) return;
@@ -89,15 +124,26 @@ export default function DetailScreen({ route, navigation }: DetailScreenProps) {
       <View style={styles.productInfoContainer}>
         <View style={styles.titleRow}>
           <Text style={styles.productName}>{product.name}</Text>
-          <TouchableOpacity style={styles.favoriteButton}>
-          <FontAwesome 
-            name={product.is_favourite ? "heart" : "heart-o"} 
-            size={20} 
-            color={product.is_favourite ? "red" : "#181725"} 
-          />
+          <TouchableOpacity 
+            style={styles.favoriteButton} 
+            onPress={handleToggleFavorite}
+            disabled={isTogglingFavorite}
+          >
+            <FontAwesome 
+              name={isFavorite ? "heart" : "heart-o"} 
+              size={24} 
+              color={isFavorite ? "red" : "#181725"} 
+            />
+            {isTogglingFavorite && (
+              <ActivityIndicator 
+                size="small" 
+                color="#53B175" 
+                style={styles.favoriteLoader} 
+              />
+            )}
           </TouchableOpacity>
         </View>
-        <Text style={styles.unit}>1kg, Price</Text>
+        <Text style={styles.unit}>1kg, Giá</Text>
         <View style={styles.quantityPriceRow}>
           <View style={styles.quantityContainer}>
             <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
@@ -114,17 +160,17 @@ export default function DetailScreen({ route, navigation }: DetailScreenProps) {
 
       <View style={styles.section}>
         <TouchableOpacity style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Product Detail</Text>
+          <Text style={styles.sectionTitle}>Chi tiết Sản Phẩm</Text>
           <Feather name="chevron-down" size={20} color="#181725" />
         </TouchableOpacity>
         <Text style={styles.sectionContent}>
-          Apples are nutritious. Apples may be good for weight loss. Apples may be good for your heart. As part of a healthful and varied diet.
+          {product.description}
         </Text>
       </View>
 
       <View style={styles.section}>
         <TouchableOpacity style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Nutrition</Text>
+          <Text style={styles.sectionTitle}>Thành phần dinh dưỡng</Text>
           <Text style={styles.nutritionWeight}>100gr</Text>
           <Feather name="chevron-right" size={20} color="#181725" />
         </TouchableOpacity>
@@ -247,6 +293,16 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     padding: 5,
+    position: 'relative',
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  favoriteLoader: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   unit: {
     fontSize: 16,

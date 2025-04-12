@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   View, 
   Text, 
@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { fetchCartItems, updateCartItemQuantity, removeCartItem, CartItem, addToCart } from '../services/api';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useUser } from '../context/UserContext';
+import { useTheme } from '../components/ThemeProvider';
 
 interface CartItemWithDetails extends CartItem {
   name: string;
@@ -27,21 +28,11 @@ const CartScreen = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user } = useUser();
+  const navigation = useNavigation();
+  const { theme, isDarkMode } = useTheme();
 
-  // Load cart items when the component mounts
-  useEffect(() => {
-    loadCartItems();
-  }, []);
-  
-  // Also reload cart items when the screen comes into focus
-  useFocusEffect(
-    React.useCallback(() => {
-      loadCartItems();
-      return () => {};
-    }, [])
-  );
-
-  const loadCartItems = async () => {
+  // Define loadCartItems with useCallback to prevent recreation on each render
+  const loadCartItems = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -60,47 +51,78 @@ const CartScreen = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.id]); // Only recreate when user ID changes
+  
+  // Load cart items when the component mounts
+  useEffect(() => {
+    loadCartItems();
+  }, [loadCartItems]);
+  
+  // Also reload cart items when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadCartItems();
+      return () => {};
+    }, [loadCartItems])
+  );
 
-  const updateQuantity = async (id: string, change: number) => {
+
+
+  const updateQuantity = useCallback(async (id: string, change: number) => {
     try {
-      const item = cartItems.find(item => item.id === id);
-      if (!item) return;
-      
-      const newQuantity = Math.max(1, item.quantity + change);
-      
       setIsUpdating(true);
-      await updateCartItemQuantity(id, newQuantity);
       
-      setCartItems(cartItems.map(item => 
-        item.id === id 
-          ? { ...item, quantity: newQuantity, description: `${newQuantity} x $${item.price}` } 
-          : item
-      ));
+      setCartItems(prevItems => {
+        const item = prevItems.find(item => item.id === id);
+        if (!item) return prevItems;
+        
+        const newQuantity = Math.max(1, item.quantity + change);
+        
+        // Optimistically update UI
+        return prevItems.map(item => 
+          item.id === id 
+            ? { ...item, quantity: newQuantity, description: `${newQuantity} x $${item.price}` } 
+            : item
+        );
+      });
+      
+      // Find the item again from the updated state to get the new quantity
+      const updatedItem = cartItems.find(item => item.id === id);
+      if (updatedItem) {
+        await updateCartItemQuantity(id, updatedItem.quantity);
+      }
     } catch (error) {
       console.error('Error updating quantity:', error);
       Alert.alert('Lỗi', 'Không thể cập nhật số lượng. Vui lòng thử lại.');
+      // Revert the optimistic update by reloading cart items
+      loadCartItems();
     } finally {
       setIsUpdating(false);
     }
-  };
+  }, [cartItems, loadCartItems]);
 
-  const removeItem = async (id: string) => {
+  const removeItem = useCallback(async (id: string) => {
     try {
       setIsUpdating(true);
+      
+      // Optimistically update UI
+      setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+      
+      // Then perform the actual API call
       await removeCartItem(id);
-      setCartItems(cartItems.filter(item => item.id !== id));
     } catch (error) {
       console.error('Error removing item:', error);
       Alert.alert('Lỗi', 'Không thể xóa sản phẩm. Vui lòng thử lại.');
+      // Revert the optimistic update by reloading cart items
+      loadCartItems();
     } finally {
       setIsUpdating(false);
     }
-  };
+  }, [loadCartItems]);
 
-  const calculateTotal = () => {
+  const calculateTotal = useMemo(() => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
-  };
+  }, [cartItems]);
 
   const renderCartItem = (item: CartItemWithDetails) => (
     <View key={item.id} style={styles.cartItemContainer}>
@@ -130,7 +152,7 @@ const CartScreen = () => {
         </View>
         
         <View style={styles.itemPriceContainer}>
-          <Text style={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+          <Text style={[styles.itemPrice, { color: theme.primaryColor }]}>${(item.price * item.quantity).toFixed(2)}</Text>
         </View>
       </View>
       
@@ -139,49 +161,56 @@ const CartScreen = () => {
         disabled={isUpdating}
         style={styles.removeButton}
       >
-        <Feather name="x" size={20} color="#CCCCCC" />
+        <Feather name="x" size={20} color={isDarkMode ? '#555' : '#CCCCCC'} />
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.screenTitle}>My Cart</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+      <Text style={[styles.screenTitle, { color: theme.textColor }]}>My Cart</Text>
       
       {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#53B175" />
+        <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+          <ActivityIndicator size="large" color={theme.primaryColor} />
         </View>
       ) : error ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={loadCartItems}>
+        <View style={[styles.errorContainer, { backgroundColor: theme.backgroundColor }]}>
+          <Text style={[styles.errorText, { color: theme.textColor }]}>{error}</Text>
+          <TouchableOpacity style={[styles.retryButton, { backgroundColor: theme.primaryColor }]} onPress={loadCartItems}>
             <Text style={styles.retryButtonText}>Thử lại</Text>
           </TouchableOpacity>
         </View>
       ) : cartItems.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Feather name="shopping-cart" size={60} color="#CCCCCC" />
-          <Text style={styles.emptyText}>Giỏ hàng của bạn đang trống</Text>
-          <Text style={styles.emptySubtext}>Hãy thêm sản phẩm vào giỏ hàng</Text>
+        <View style={[styles.emptyContainer, { backgroundColor: theme.backgroundColor }]}>
+          <Feather name="shopping-cart" size={60} color={isDarkMode ? '#555' : '#CCCCCC'} />
+          <Text style={[styles.emptyText, { color: theme.textColor }]}>Giỏ hàng của bạn đang trống</Text>
+          <Text style={[styles.emptySubtext, { color: theme.textColor }]}>Hãy thêm sản phẩm vào giỏ hàng</Text>
         </View>
       ) : (
         <>
-          <View style={styles.cartListContainer}>
+          <View style={[styles.cartListContainer, { backgroundColor: theme.backgroundColor }]}>
             <ScrollView style={styles.cartList}>
               {cartItems.map(renderCartItem)}
             </ScrollView>
           </View>
           
-          <View style={styles.bottomContainer}>
+          <View style={[styles.bottomContainer, { backgroundColor: theme.cardBackground }]}>
             <View style={styles.totalContainer}>
-              <Text style={styles.totalLabel}>Tổng tiền:</Text>
-              <Text style={styles.totalAmount}>${calculateTotal()}</Text>
+              <Text style={[styles.totalLabel, { color: theme.textColor }]}>Tổng tiền:</Text>
+              <Text style={[styles.totalAmount, { color: theme.primaryColor }]}>${calculateTotal}</Text>
             </View>
-            <TouchableOpacity style={styles.checkoutButton} disabled={isUpdating}>
+            <TouchableOpacity 
+              style={styles.checkoutButton} 
+              disabled={isUpdating}
+              onPress={() => navigation.navigate('PaymentScreen' as never, {
+                cartItems,
+                totalAmount: calculateTotal
+              } as never)}
+            >
               <Text style={styles.checkoutButtonText}>Thanh toán</Text>
               <View style={styles.priceContainer}>
-                <Text style={styles.totalPrice}>${calculateTotal()}</Text>
+                <Text style={styles.totalPrice}>${calculateTotal}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -190,7 +219,7 @@ const CartScreen = () => {
       
       {isUpdating && (
         <View style={styles.updatingOverlay}>
-          <ActivityIndicator size="large" color="#53B175" />
+          <ActivityIndicator size="large" color={theme.primaryColor} />
         </View>
       )}
     </SafeAreaView>
@@ -200,7 +229,6 @@ const CartScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     paddingBottom: 20, // Added padding to the main container
   },
   screenTitle: {
@@ -217,7 +245,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cartItemContainer: {
-    backgroundColor: 'white',
     marginHorizontal: 15,
     marginBottom: 15,
     borderRadius: 10,

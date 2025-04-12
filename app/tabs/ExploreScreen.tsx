@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { fetchCategories, Category } from '../services/api';
 import { Feather } from '@expo/vector-icons';
+import { useTheme } from '../components/ThemeProvider';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 
 // Array of background colors to use for categories
 const backgroundColors = [
@@ -13,6 +17,8 @@ const ExploreScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { theme, isDarkMode } = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     loadCategories();
@@ -44,27 +50,30 @@ const ExploreScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Tìm kiếm sản phẩm</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+      <Text style={[styles.title, { color: theme.textColor }]}>Tìm kiếm sản phẩm</Text>
 
-      <View style={styles.searchContainer}>
-        <Feather name="search" size={20} color="#7C7C7C" style={styles.searchIcon} />
-        <TextInput 
-          placeholder="Tìm kiếm danh mục" 
-          style={styles.searchInput} 
-          value={searchText}
-          onChangeText={setSearchText}
-        />
-      </View>
+      <TouchableOpacity 
+        style={[styles.searchContainer, { backgroundColor: isDarkMode ? '#333' : '#F2F3F2' }]}
+        onPress={() => navigation.navigate('SearchScreen')}
+        activeOpacity={0.7}
+      >
+        <Feather name="search" size={20} color={theme.textColor} style={styles.searchIcon} />
+        <Text 
+          style={[styles.searchInput, { color: isDarkMode ? '#999' : '#7C7C7C' }]} 
+        >
+          Tìm kiếm sản phẩm
+        </Text>
+      </TouchableOpacity>
 
       {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#53B175" />
+        <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+          <ActivityIndicator size="large" color={theme.primaryColor} />
         </View>
       ) : error ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={loadCategories}>
+        <View style={[styles.errorContainer, { backgroundColor: theme.backgroundColor }]}>
+          <Text style={[styles.errorText, { color: theme.textColor }]}>{error}</Text>
+          <TouchableOpacity style={[styles.retryButton, { backgroundColor: theme.primaryColor }]} onPress={loadCategories}>
             <Text style={styles.retryButtonText}>Thử lại</Text>
           </TouchableOpacity>
         </View>
@@ -74,15 +83,15 @@ const ExploreScreen = () => {
           numColumns={2}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <TouchableOpacity style={[styles.categoryItem, { backgroundColor: item.color }]}>
+            <TouchableOpacity style={[styles.categoryItem, { backgroundColor: isDarkMode ? theme.cardBackground : item.color }]}>
               <Image source={{ uri: item.image }} style={styles.categoryImage} />
-              <Text style={styles.categoryText}>{item.name}</Text>
+              <Text style={[styles.categoryText, { color: isDarkMode ? theme.textColor : '#000' }]}>{item.name}</Text>
             </TouchableOpacity>
           )}
           columnWrapperStyle={styles.row}
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Không tìm thấy danh mục nào</Text>
+            <View style={[styles.emptyContainer, { backgroundColor: theme.backgroundColor }]}>
+              <Text style={[styles.emptyText, { color: theme.textColor }]}>Không tìm thấy danh mục nào</Text>
             </View>
           }
         />
@@ -96,7 +105,6 @@ export default ExploreScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
     padding: 20,
   },
   title: {
@@ -106,13 +114,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   searchContainer: {
-    backgroundColor: '#F0F0F0',
     borderRadius: 10,
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
     margin: 15,
-    borderColor: 'black',
+    borderColor: 'gray',
     borderWidth: 0.5
   },
   searchIcon: {

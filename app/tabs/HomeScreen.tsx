@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, Dimensions, ActivityIndicator, Platform, SafeAreaView, Alert } from 'react-native';
+import { useTheme } from '../components/ThemeProvider';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { Product } from '../types/product';
@@ -22,6 +23,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [notifications, setNotifications] = useState<any[]>([]);
   const bannerRef = useRef<FlatList>(null);
   const { user } = useUser();
+  const { theme } = useTheme();
   
   useEffect(() => {
     loadInitialData();
@@ -313,17 +315,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#53B175" />
+      <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+        <ActivityIndicator size="large" color={theme.primaryColor} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
       {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#53B175" />
+        <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+          <ActivityIndicator size="large" color={theme.primaryColor} />
         </View>
       ) : (
       <FlatList
@@ -331,19 +333,23 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         renderItem={() => (
           <View>
             <View style={styles.headerContainer}>
-              <View style={styles.searchContainer}>
-                <Feather name="search" size={20} color="#181B19" style={styles.searchIcon} />
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Search products"
-                  placeholderTextColor="#7C7C7C"
-                />
-              </View>
+              <TouchableOpacity 
+                style={styles.searchContainer}
+                onPress={() => navigation.navigate('SearchScreen')}
+                activeOpacity={0.7}
+              >
+                <Feather name="search" size={20} color={theme.textColor} style={styles.searchIcon} />
+                <Text
+                  style={[styles.searchInput, { color: theme.textColor === '#000' ? '#7C7C7C' : '#999' }]}
+                >
+                  Tìm kiếm sản phẩm
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.notificationContainer}
                 onPress={() => navigation.navigate('NotificationScreen')}
               >
-                <Feather name="bell" size={24} color="#181B19" />
+                <Feather name="bell" size={24} color={theme.textColor} />
                 {notifications.length > 0 && (
                   <View style={styles.notificationBadge}>
                     <Text style={styles.notificationBadgeText}>
@@ -377,9 +383,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
             {/* All Products Section */}
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>All Products</Text>
+              <Text style={styles.sectionTitle}>Sản Phẩm</Text>
               <TouchableOpacity onPress={() => navigation.navigate('AllProductsScreen', { type: 'all', title: 'All Products' })}>
-                <Text style={styles.seeAllText}>See All</Text>
+                <Text style={styles.seeAllText}>xem tất cả</Text>
               </TouchableOpacity>
             </View>
 
@@ -399,9 +405,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             />
 
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Hot Products</Text>
+              <Text style={styles.sectionTitle}>Sản Phẩm Hot</Text>
               <TouchableOpacity onPress={() => navigation.navigate('AllProductsScreen', { type: 'hot', title: 'Hot Products' })}>
-                <Text style={styles.seeAllText}>See All</Text>
+                <Text style={styles.seeAllText}>xem tất cả</Text>
               </TouchableOpacity>
             </View>
 
@@ -422,9 +428,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             {historyProducts.length > 0 && (
               <>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>History Products</Text>
+                  <Text style={styles.sectionTitle}>Sản Phẩm đã xem</Text>
                   <TouchableOpacity onPress={() => navigation.navigate('AllProductsScreen', { type: 'history', title: 'History Products' })}>
-                    <Text style={styles.seeAllText}>See All</Text>
+                    <Text style={styles.seeAllText}>xem tất cả</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -457,7 +463,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     paddingBottom: Platform.OS === 'ios' ? 120 : 100,
   },
   locationHeader: {
@@ -481,7 +486,6 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#181725',
     marginLeft: 8,
   },
   headerContainer: {

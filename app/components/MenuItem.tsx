@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Dùng icon phù hợp
+import { useTheme } from './ThemeProvider';
 
 interface MenuItemProps {
   title: string;
@@ -10,13 +11,21 @@ interface MenuItemProps {
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ title, iconName, onPress }) => {
+  const { theme } = useTheme();
+  
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity 
+      style={[styles.container, { 
+        borderBottomColor: theme.borderColor,
+        backgroundColor: theme.cardBackground
+      }]} 
+      onPress={onPress}
+    >
       <View style={styles.iconContainer}>
-        <Icon name={iconName} size={20} color="#000" />
+        <Icon name={iconName} size={20} color={theme.textColor} />
       </View>
-      <Text style={styles.title}>{title}</Text>
-      <Icon name="chevron-right" size={16} color="#999" />
+      <Text style={[styles.title, { color: theme.textColor }]}>{title}</Text>
+      <Icon name="chevron-right" size={16} color={theme.textColor} />
     </TouchableOpacity>
   );
 };
@@ -28,7 +37,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 10,
   },
   iconContainer: {
     width: 30,

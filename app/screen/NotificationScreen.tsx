@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -12,33 +12,25 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { Feather } from '@expo/vector-icons';
-import { fetchNotifications, Notification } from '../services/api';
+import { Notification } from '../services/api';
 import { useUser } from '../context/UserContext';
 import { format, formatDistanceToNow } from 'date-fns';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { loadNotifications } from '../redux/reducers/notificationReducer';
 
 type NotificationScreenProps = NativeStackScreenProps<RootStackParamList, 'NotificationScreen'>;
 
 export default function NotificationScreen({ navigation }: NotificationScreenProps) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { notifications, loading: isLoading, error } = useAppSelector((state: any) => state.notifications);
   const { user } = useUser();
 
   useEffect(() => {
-    loadNotifications();
-  }, []);
+    const userId = user?.id ? String(user.id) : "1";
+    dispatch(loadNotifications(userId) as any);
+  }, [dispatch, user?.id]);
 
-  const loadNotifications = async () => {
-    setIsLoading(true);
-    try {
-      const userId = user?.id ? String(user.id) : "1";
-      const data = await fetchNotifications(userId);
-      setNotifications(data);
-    } catch (error) {
-      console.error('Error loading notifications:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   const formatNotificationTime = (dateString: string) => {
     try {

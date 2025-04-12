@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './index';
 import LoginScreen from './screen/LoginScreen';
@@ -16,8 +16,19 @@ import MyDetailsScreen from './screen/MyDetailsScreen'
 import AboutScreen from './screen/AboutScreen'
 import AllProductsScreen from './screen/AllProductsScreen';
 import NotificationScreen from './screen/NotificationScreen';
+import PaymentScreen from './screen/PaymentScreen';
+import SuccessScreen from './screen/SuccessScreen';
+import OrderHistoryScreen from './screen/OrderHistoryScreen';
+import ChangePasswordScreen from './screen/ChangePasswordScreen';
+import SearchScreen from './screen/SearchScreen';
+import CategoryProductsScreen from './screen/CategoryProductsScreen';
 import { Feather } from '@expo/vector-icons';
 import { UserProvider } from './context/UserContext';
+
+// Redux imports
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import ThemeProvider from './components/ThemeProvider';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,7 +82,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Explore"
-        component={ExploreScreen}
+        component={SearchScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, color }) => (
@@ -134,21 +145,50 @@ function TabNavigator() {
 }
 
 export default function RootLayout() {
+
+  console.log("HomeScreen:", HomeScreen);
+console.log("SearchScreen:", SearchScreen);
+console.log("CartScreen:", CartScreen);
+console.log("FavouriteScreen:", FavouriteScreen);
+console.log("AccountScreen:", AccountScreen);
+console.log("DetailScreen:", DetailScreen);
+console.log("AllProductsScreen:", AllProductsScreen);
+console.log("NotificationScreen:", NotificationScreen);
+console.log("MyDetailsScreen:", MyDetailsScreen);
+console.log("AboutScreen:", AboutScreen);
+console.log("PaymentScreen:", PaymentScreen);
+console.log("SuccessScreen:", SuccessScreen);
+console.log("OrderHistoryScreen:", OrderHistoryScreen);
+console.log("ChangePasswordScreen:", ChangePasswordScreen);
+console.log("SearchScreen:", SearchScreen);
+console.log("CategoryProductsScreen:", CategoryProductsScreen);
+
+
   return (
-    <UserProvider>
-      <Stack.Navigator initialRouteName='SplashScreen' screenOptions={{headerShown: false}}>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="HomeScreen" component={TabNavigator}/>
-        <Stack.Screen name="DetailScreen" component={DetailScreen}/>
-        <Stack.Screen name="AllProductsScreen" component={AllProductsScreen}/>
-        <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>
-        <Stack.Screen name="MyDetailScreen" component={MyDetailsScreen}/>
-        <Stack.Screen name="AboutScreen" component={AboutScreen}/>
-      </Stack.Navigator>
-    </UserProvider>
+    <Provider store={store}>
+      <UserProvider>
+        <ThemeProvider>
+          <Stack.Navigator initialRouteName='SplashScreen' screenOptions={{headerShown: false}}>
+            <Stack.Screen name="SplashScreen" component={SplashScreen} />
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="HomeScreen" component={TabNavigator}/>
+            <Stack.Screen name="DetailScreen" component={DetailScreen}/>
+            <Stack.Screen name="AllProductsScreen" component={AllProductsScreen}/>
+            <Stack.Screen name="NotificationScreen" component={NotificationScreen}/>
+            <Stack.Screen name="MyDetailScreen" component={MyDetailsScreen}/>
+            <Stack.Screen name="AboutScreen" component={AboutScreen}/>
+            <Stack.Screen name="PaymentScreen" component={PaymentScreen}/>
+            <Stack.Screen name="SuccessScreen" component={SuccessScreen}/>
+            <Stack.Screen name="OrderHistoryScreen" component={OrderHistoryScreen}/>
+            <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen}/>
+            <Stack.Screen name="SearchScreen" component={SearchScreen}/>
+            <Stack.Screen name="CategoryProductsScreen" component={CategoryProductsScreen}/>
+          </Stack.Navigator>
+        </ThemeProvider>
+      </UserProvider>
+    </Provider>
   );  
 }
 

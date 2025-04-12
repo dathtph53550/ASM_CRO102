@@ -4,6 +4,7 @@ export interface UserType {
   id: number;
   full_name: string;
   email: string;
+  password?: string;
 }
 
 export type RootStackParamList = {
@@ -21,4 +22,8 @@ export type RootStackParamList = {
   Account: undefined;
   MyDetailScreen: undefined;
   AboutScreen: undefined;
+  ChangePasswordScreen: undefined;
+  OrderHistoryScreen: undefined;
+  SearchScreen: undefined;
+  CategoryProductsScreen: { categoryId: string | number; categoryName: string };
 }; 

@@ -1,6 +1,8 @@
 import { Product, Comment, CartItemWithDetails } from '../types/product';
 import { UserType } from '../types/navigation';
 
+
+
 // Define Notification interface
 export interface Notification {
   id: string;
@@ -11,6 +13,29 @@ export interface Notification {
 
 const API_URL = 'http://localhost:3000';
 
+export async function changePassword(userId: string | number, currentPassword: string, newPassword: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_URL}/users/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password: newPassword
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to change password');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error changing password:', error);
+    throw error;
+  }
+}
+
 export async function fetchProducts(): Promise<Product[]> {
   try {
     const response = await fetch(`${API_URL}/products`);
@@ -20,6 +45,43 @@ export async function fetchProducts(): Promise<Product[]> {
     return await response.json();
   } catch (error) {
     console.error('Error fetching products:', error);
+    throw error;
+  }
+}
+
+
+
+export async function searchProducts(query: string): Promise<Product[]> {
+  try {
+    // Lấy tất cả sản phẩm trước
+    const response = await fetch(`${API_URL}/products`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+    const allProducts = await response.json();
+    
+    // Lọc sản phẩm theo tên một cách chính xác hơn
+    const searchTerm = query.toLowerCase().trim();
+    const filteredProducts = allProducts.filter((product: Product) => 
+      product.name.toLowerCase().includes(searchTerm)
+    );
+    
+    return filteredProducts;
+  } catch (error) {
+    console.error('Error searching products:', error);
+    throw error;
+  }
+}
+
+export async function fetchProductsByCategory(categoryId: string | number): Promise<Product[]> {
+  try {
+    const response = await fetch(`${API_URL}/products?category_id=${categoryId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch products by category');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching products by category:', error);
     throw error;
   }
 }
@@ -214,6 +276,55 @@ export const fetchHotProducts = async (): Promise<Product[]> => {
   } catch (error) {
     console.error('Error fetching hot products:', error);
     throw error;
+  }
+};
+
+export const fetchFavoriteProducts = async (): Promise<Product[]> => {
+  try {
+    const response = await fetch(`${API_URL}/products?is_favourite=true`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch favorite products');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching favorite products:', error);
+    return []; // Return empty array on error to prevent app crashes
+  }
+};
+
+export const toggleFavoriteStatus = async (productId: string | number, isFavorite: boolean): Promise<boolean> => {
+  try {
+    // First get the current product data
+    const productResponse = await fetch(`${API_URL}/products/${productId}`);
+    if (!productResponse.ok) {
+      throw new Error('Failed to fetch product');
+    }
+    const product = await productResponse.json();
+    
+    // Update the favorite status
+    const updatedProduct = {
+      ...product,
+      is_favourite: isFavorite
+    };
+    
+    // Save the updated product
+    const updateResponse = await fetch(`${API_URL}/products/${productId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProduct),
+    });
+    
+    if (!updateResponse.ok) {
+      throw new Error('Failed to update favorite status');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error toggling favorite status:', error);
+    return false;
   }
 };
 

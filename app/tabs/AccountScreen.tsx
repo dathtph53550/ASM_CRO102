@@ -1,14 +1,19 @@
 // src/screens/AccountScreen.tsx
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Switch } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Switch, Modal, Alert } from 'react-native';
+import { useTheme } from '../components/ThemeProvider';
 import MenuItem from '../components/MenuItem';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleTheme } from '../redux/reducers/themeReducer';
 
 type RootStackParamList = {
   MyDetailScreen: undefined;
-  AboutScreen:undefined
-
+  AboutScreen: undefined;
+  OrderHistoryScreen: undefined;
+  ChangePasswordScreen: undefined;
+  Login: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -16,15 +21,32 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const AccountScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const { isDarkMode } = useSelector((state: any) => state.theme);
+  const { theme } = useTheme();
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme());
   };
 
+  const handleLogout = () => {
+    setLogoutModalVisible(true);
+  };
+
+  const confirmLogout = () => {
+    // Thực hiện các hành động đăng xuất ở đây
+    // Ví dụ: xóa token, đặt lại trạng thái người dùng, v.v.
+    setLogoutModalVisible(false);
+    // Điều hướng về màn hình đăng nhập
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
   
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
       <ScrollView>
         <View style={styles.header}>
           <Image 
@@ -38,32 +60,60 @@ const AccountScreen = () => {
           <TouchableOpacity>
           </TouchableOpacity>
         </View>
-
-        <MenuItem title="Orders" iconName="shopping-bag" />
-        
-        
-        <MenuItem title="My Details" iconName="user"  onPress={() => navigation.navigate('MyDetailScreen')}/>
-        <MenuItem title="Delivery Address" iconName="map-marker" />
-        <MenuItem title="Payment Methods" iconName="credit-card" />
-        <MenuItem title="Promo Card" iconName="gift" />
-        <MenuItem title="Notifications" iconName="bell" />
-        <MenuItem title="About" iconName="info-circle" onPress={() => navigation.navigate('AboutScreen')}/>
-        <View style={styles.themeContainer}>
-          <Text style={styles.themeText}>Change Theme</Text>
+        <MenuItem title="Thông Tin Cá Nhân" iconName="user"  onPress={() => navigation.navigate('MyDetailScreen')}/>
+        <MenuItem title="Lịch Sử Đặt Hàng" iconName="shopping-bag" onPress={() => navigation.navigate('OrderHistoryScreen')} />
+        <MenuItem title="Đổi Mật Khẩu" iconName="lock" onPress={() => navigation.navigate('ChangePasswordScreen')} />
+        <MenuItem title="Khác" iconName="info-circle" onPress={() => navigation.navigate('AboutScreen')}/>
+        <View style={[styles.themeContainer, { backgroundColor: theme.secondaryColor }]}>
+          <Text style={[styles.themeText, { color: theme.textColor }]}>Đổi giao diện</Text>
           <Switch 
             value={isDarkMode} 
-            onValueChange={toggleTheme} 
+            onValueChange={handleToggleTheme}
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            thumbColor={isDarkMode ? theme.primaryColor : '#f4f3f4'}
           />
         </View>
 
        
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={() => console.log('hihih')}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
       </ScrollView>
 
+      {/* Logout Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={logoutModalVisible}
+        onRequestClose={() => setLogoutModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Xác nhận</Text>
+            </View>
+            <View style={styles.modalBody}>
+              <Text style={styles.modalText}>Bạn có muốn đăng xuất không?</Text>
+            </View>
+            <View style={styles.modalFooter}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={() => setLogoutModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Huỷ</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.logoutModalButton]} 
+                onPress={confirmLogout}
+              >
+                <Text style={styles.logoutModalButtonText}>Đăng Xuất</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -71,13 +121,14 @@ const AccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#FFF',
+    marginBottom: 10,
+    borderRadius: 10,
+    marginHorizontal: 10,
   },
   avatar: {
     width: 60,
@@ -132,7 +183,75 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  modalHeader: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#181725',
+  },
+  modalBody: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#7C7C7C',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  modalButton: {
+    flex: 1,
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButton: {
+    borderRightWidth: 1,
+    borderRightColor: '#F0F0F0',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: '#7C7C7C',
+    fontWeight: '600',
+  },
+  logoutModalButton: {
+    backgroundColor: 'white',
+  },
+  logoutModalButtonText: {
+    fontSize: 16,
+    color: '#53B175',
+    fontWeight: '600',
+  },
 });
 
 export default AccountScreen;

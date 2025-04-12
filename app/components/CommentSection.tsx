@@ -73,16 +73,16 @@ export default function CommentSection({ productId, comments, onCommentAdded, us
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>Reviews & Ratings</Text>
+        <Text style={styles.title}>Đánh giá</Text>
         {comments.length > 0 && (
-          <Text style={styles.commentCount}>{comments.length} {comments.length === 1 ? 'review' : 'reviews'}</Text>
+          <Text style={styles.commentCount}>{comments.length} {comments.length === 1 ? 'Phản hồi' : 'Phản hồi'}</Text>
         )}
       </View>
       
       <View style={styles.addCommentContainer}>
-        <Text style={styles.addCommentTitle}>Add Your Review</Text>
+        <Text style={styles.addCommentTitle}>Thêm đánh giá</Text>
         <View style={styles.ratingSelector}>
-          <Text style={styles.ratingLabel}>Your Rating:</Text>
+          <Text style={styles.ratingLabel}>Đánh giá của bạn:</Text>
           <View style={styles.starsContainer}>
             {[...Array(5)].map((_, index) => {
               const ratingValue = index + 1;
@@ -107,7 +107,7 @@ export default function CommentSection({ productId, comments, onCommentAdded, us
             style={styles.input}
             value={newComment}
             onChangeText={setNewComment}
-            placeholder="Share your experience with this product..."
+            placeholder="Ghi những gì bạn nghĩ về sản phẩm"
             multiline
             numberOfLines={4}
           />
@@ -120,13 +120,13 @@ export default function CommentSection({ productId, comments, onCommentAdded, us
           {isSubmitting ? (
             <ActivityIndicator color="white" size="small" />
           ) : (
-            <Text style={styles.addButtonText}>Post Review</Text>
+            <Text style={styles.addButtonText}>Gửi</Text>
           )}
         </TouchableOpacity>
       </View>
       
       <View style={styles.reviewsContainer}>
-        <Text style={styles.reviewsTitle}>Customer Reviews</Text>
+        <Text style={styles.reviewsTitle}>Đánh giá</Text>
         {comments.length > 0 ? (
           <FlatList
             data={comments}
@@ -138,8 +138,8 @@ export default function CommentSection({ productId, comments, onCommentAdded, us
         ) : (
           <View style={styles.noCommentsContainer}>
             <Feather name="message-circle" size={50} color="#E2E2E2" />
-            <Text style={styles.noComments}>No reviews yet</Text>
-            <Text style={styles.noCommentsSubtext}>Be the first to review this product</Text>
+            <Text style={styles.noComments}>Chưa có đánh giá</Text>
+            <Text style={styles.noCommentsSubtext}>Để lại đánh giá đầu tiên</Text>
           </View>
         )}
       </View>
