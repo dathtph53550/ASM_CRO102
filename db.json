@@ -1,0 +1,192 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "full_name": "Nguyen Van A",
+      "email": "hoangdat07082005@gmail.com",
+      "password": "123456",
+      "theme": "light"
+    },
+    {
+      "id": "1744464593938",
+      "full_name": "Hoang Tien Dat",
+      "email": "test1@gmail.com",
+      "password": "123456",
+      "theme": "light"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Fruits",
+      "image": "https://i.pinimg.com/736x/01/54/12/015412f40501b820f34257b1590af202.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Beverages",
+      "image": "https://i.pinimg.com/474x/bd/0c/b5/bd0cb52a742732555e7df62f9b299733.jpg"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Apple",
+      "description": "Fresh and juicy red apple",
+      "price": 1.99,
+      "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
+      "category_id": "1",
+      "is_hot": true,
+      "is_favourite": true,
+      "viewed_at": "2025-04-12T14:35:33.778Z",
+      "created_at": "2025-03-25T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Orange Juice",
+      "description": "100% fresh orange juice",
+      "price": 3.49,
+      "image": "https://i.pinimg.com/736x/e5/2b/6f/e52b6fa6e0527d244e6eb838f6c7cd70.jpg",
+      "category_id": "2",
+      "is_hot": false,
+      "is_favourite": false,
+      "viewed_at": "2025-04-12T14:27:41.678Z",
+      "created_at": "2025-03-25T11:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Bell Pepper",
+      "description": "Ăn rất là ngon",
+      "price": 2.49,
+      "image": "https://i.pinimg.com/736x/56/cf/a2/56cfa233aca065e52bb6895bd7b036f6.jpg",
+      "category_id": "2",
+      "is_hot": true,
+      "is_favourite": false,
+      "viewed_at": "2025-04-12T14:35:19.580Z",
+      "created_at": "2025-03-25T11:00:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Ginger",
+      "description": "Gừng rất cay lại không ngon",
+      "price": 2.49,
+      "image": "https://i.pinimg.com/736x/48/af/1d/48af1ddf2184fc64b8e5ba8804244927.jpg",
+      "category_id": "1",
+      "is_hot": false,
+      "is_favourite": false,
+      "viewed_at": "2025-04-12T07:46:38.388Z",
+      "created_at": "2025-03-25T11:00:00Z"
+    },
+    {
+      "id": "5",
+      "name": "Banana",
+      "description": "Chuối rất ngon và tốt cho tiêu hoá",
+      "price": 2.49,
+      "image": "https://i.pinimg.com/474x/c5/b7/7f/c5b77fda688ad986a5e8cd73a67a494c.jpg",
+      "category_id": "1",
+      "is_hot": false,
+      "is_favourite": false,
+      "viewed_at": "",
+      "created_at": "2025-03-25T11:00:00Z"
+    },
+    {
+      "id": "6",
+      "name": "Lemon Ginger Iced",
+      "description": "Chanh gừng đá lạnh",
+      "price": 2.49,
+      "image": "https://i.pinimg.com/474x/c3/89/81/c38981d19a82e6093fbc2cfb85ad01f1.jpg",
+      "category_id": "2",
+      "is_hot": true,
+      "is_favourite": true,
+      "viewed_at": "",
+      "created_at": "2025-03-25T11:00:00Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "total_price": 5.48,
+      "status": "Completed",
+      "created_at": "2025-03-24T12:00:00Z"
+    }
+  ],
+  "cart": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "product_id": "1",
+      "quantity": 21,
+      "price": 1.99
+    },
+    {
+      "id": "9a3d",
+      "user_id": "1",
+      "product_id": "2",
+      "quantity": 3,
+      "price": 3.49
+    },
+    {
+      "id": "712e",
+      "user_id": "1744464593938",
+      "product_id": "1",
+      "quantity": 2,
+      "price": 1.99
+    }
+  ],
+  "comments": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "product_id": "1",
+      "comment": "Very fresh and delicious!",
+      "rating": 5,
+      "created_at": "2025-03-25T13:00:00Z"
+    },
+    {
+      "id": "a8c8",
+      "product_id": "1",
+      "user_id": "1",
+      "comment": "Ngon ác",
+      "rating": 5,
+      "created_at": "2025-04-12T14:27:26.568Z"
+    },
+    {
+      "id": "5929",
+      "product_id": "2",
+      "user_id": "1",
+      "comment": "Không ngon lắm",
+      "rating": 4,
+      "created_at": "2025-04-12T14:27:48.345Z"
+    },
+    {
+      "id": "2b79",
+      "product_id": "1",
+      "user_id": "1744464593938",
+      "comment": "Khá Ngon đó",
+      "rating": 3,
+      "created_at": "2025-04-12T14:31:47.690Z"
+    }
+  ],
+  "banner": [
+    {
+      "id": "1",
+      "image": "https://i.pinimg.com/736x/25/e8/21/25e8216716f2ebbfd139983a4f75f6e5.jpg"
+    },
+    {
+      "id": "2",
+      "image": "https://i.pinimg.com/736x/d3/c1/e3/d3c1e371944943a8b278065172d7c6b9.jpg"
+    },
+    {
+      "id": "3",
+      "image": "https://i.pinimg.com/736x/dc/89/93/dc8993b69fb398566b74e13bd341defa.jpg"
+    }
+  ],
+  "notification": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "message": "You have a new message",
+      "created_at": "2025-03-25T13:00:00Z"
+    }
+  ]
+}
