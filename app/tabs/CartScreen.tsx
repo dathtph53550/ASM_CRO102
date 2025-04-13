@@ -78,7 +78,6 @@ const CartScreen = () => {
         
         const newQuantity = Math.max(1, item.quantity + change);
         
-        // Optimistically update UI
         return prevItems.map(item => 
           item.id === id 
             ? { ...item, quantity: newQuantity, description: `${newQuantity} x $${item.price}` } 
@@ -86,7 +85,6 @@ const CartScreen = () => {
         );
       });
       
-      // Find the item again from the updated state to get the new quantity
       const updatedItem = cartItems.find(item => item.id === id);
       if (updatedItem) {
         await updateCartItemQuantity(id, updatedItem.quantity);
@@ -94,7 +92,6 @@ const CartScreen = () => {
     } catch (error) {
       console.error('Error updating quantity:', error);
       Alert.alert('Lỗi', 'Không thể cập nhật số lượng. Vui lòng thử lại.');
-      // Revert the optimistic update by reloading cart items
       loadCartItems();
     } finally {
       setIsUpdating(false);
@@ -105,10 +102,8 @@ const CartScreen = () => {
     try {
       setIsUpdating(true);
       
-      // Optimistically update UI
       setCartItems(prevItems => prevItems.filter(item => item.id !== id));
       
-      // Then perform the actual API call
       await removeCartItem(id);
     } catch (error) {
       console.error('Error removing item:', error);
@@ -121,7 +116,7 @@ const CartScreen = () => {
   }, [loadCartItems]);
 
   const calculateTotal = useMemo(() => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(3);
   }, [cartItems]);
 
   const renderCartItem = (item: CartItemWithDetails) => (
@@ -130,7 +125,7 @@ const CartScreen = () => {
         <Image source={{ uri: item.image }} style={styles.itemImage} />
         <View style={styles.itemDetails}>
           <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemDescription}>{item.quantity} x ${item.price}</Text>
+          <Text style={styles.itemDescription}>{item.quantity} x {item.price.toFixed(3)} đ</Text>
           
           <View style={styles.quantityContainer}>
             <TouchableOpacity 
@@ -152,7 +147,7 @@ const CartScreen = () => {
         </View>
         
         <View style={styles.itemPriceContainer}>
-          <Text style={[styles.itemPrice, { color: theme.primaryColor }]}>${(item.price * item.quantity).toFixed(2)}</Text>
+          <Text style={[styles.itemPrice, { color: theme.primaryColor }]}>{(item.price * item.quantity).toFixed(3)} đ</Text>
         </View>
       </View>
       
@@ -198,7 +193,7 @@ const CartScreen = () => {
           <View style={[styles.bottomContainer, { backgroundColor: theme.cardBackground }]}>
             <View style={styles.totalContainer}>
               <Text style={[styles.totalLabel, { color: theme.textColor }]}>Tổng tiền:</Text>
-              <Text style={[styles.totalAmount, { color: theme.primaryColor }]}>${calculateTotal}</Text>
+              <Text style={[styles.totalAmount, { color: theme.primaryColor }]}>{calculateTotal} đ</Text>
             </View>
             <TouchableOpacity 
               style={styles.checkoutButton} 
@@ -210,7 +205,7 @@ const CartScreen = () => {
             >
               <Text style={styles.checkoutButtonText}>Thanh toán</Text>
               <View style={styles.priceContainer}>
-                <Text style={styles.totalPrice}>${calculateTotal}</Text>
+                <Text style={styles.totalPrice}>{calculateTotal} đ</Text>
               </View>
             </TouchableOpacity>
           </View>

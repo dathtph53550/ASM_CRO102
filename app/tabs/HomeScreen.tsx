@@ -181,7 +181,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           <Text style={styles.productUnit}>{item.unit}</Text>
         </View>
         <View style={styles.productPriceRow}>
-          <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.productPrice}>{item.price.toFixed(3)} đ</Text>
           <TouchableOpacity 
             style={styles.addButton}
             onPress={() => handleAddToCart(item)}
@@ -224,7 +224,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         </Text>
       </View>
       <View style={styles.productPriceRow}>
-        <Text style={styles.productPrice}>${item.price}</Text>
+        <Text style={styles.productPrice}>{item.price.toFixed(3)} đ</Text>
         <TouchableOpacity 
           style={styles.addButton}
           onPress={() => handleAddToCart(item)}

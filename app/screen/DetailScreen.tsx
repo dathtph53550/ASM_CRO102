@@ -154,7 +154,7 @@ export default function DetailScreen({ route, navigation }: DetailScreenProps) {
               <Text style={styles.quantityText}>+</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.price}>${product.price}</Text>
+          <Text style={styles.price}>{product.price.toFixed(3)} đ</Text>
         </View>
       </View>
 

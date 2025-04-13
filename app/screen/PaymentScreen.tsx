@@ -116,9 +116,9 @@ const PaymentScreen = () => {
               <View style={styles.itemDetails}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemQuantity}>Số lượng: {item.quantity}</Text>
-                <Text style={styles.itemQuantity}>Giá: ${item.price}</Text>
+                <Text style={styles.itemQuantity}>Giá: {item.price.toFixed(3)} đ</Text>
               </View>
-              <Text style={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+              <Text style={styles.itemPrice}>{(item.price * item.quantity).toFixed(3)} đ</Text>
             </View>
           ))}
         </View>

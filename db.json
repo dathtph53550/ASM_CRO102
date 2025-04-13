@@ -32,19 +32,19 @@
       "id": "1",
       "name": "Apple",
       "description": "Fresh and juicy red apple",
-      "price": 1.99,
+      "price": 25,
       "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
       "category_id": "1",
       "is_hot": true,
-      "is_favourite": true,
-      "viewed_at": "2025-04-12T21:01:04.827Z",
+      "is_favourite": false,
+      "viewed_at": "2025-04-13T09:14:56.596Z",
       "created_at": "2025-03-25T10:00:00Z"
     },
     {
       "id": "2",
       "name": "Orange Juice",
       "description": "100% fresh orange juice",
-      "price": 3.49,
+      "price": 25,
       "image": "https://i.pinimg.com/736x/e5/2b/6f/e52b6fa6e0527d244e6eb838f6c7cd70.jpg",
       "category_id": "2",
       "is_hot": false,
@@ -56,11 +56,11 @@
       "id": "3",
       "name": "Bell Pepper",
       "description": "Ăn rất là ngon",
-      "price": 2.49,
+      "price": 35,
       "image": "https://i.pinimg.com/736x/56/cf/a2/56cfa233aca065e52bb6895bd7b036f6.jpg",
       "category_id": "2",
       "is_hot": true,
-      "is_favourite": true,
+      "is_favourite": false,
       "viewed_at": "2025-04-12T19:21:12.190Z",
       "created_at": "2025-03-25T11:00:00Z"
     },
@@ -68,7 +68,7 @@
       "id": "4",
       "name": "Ginger",
       "description": "Gừng rất cay lại không ngon",
-      "price": 2.49,
+      "price": 55,
       "image": "https://i.pinimg.com/736x/48/af/1d/48af1ddf2184fc64b8e5ba8804244927.jpg",
       "category_id": "1",
       "is_hot": false,
@@ -80,11 +80,11 @@
       "id": "5",
       "name": "Banana",
       "description": "Chuối rất ngon và tốt cho tiêu hoá",
-      "price": 2.49,
+      "price": 15,
       "image": "https://i.pinimg.com/474x/c5/b7/7f/c5b77fda688ad986a5e8cd73a67a494c.jpg",
       "category_id": "1",
       "is_hot": false,
-      "is_favourite": true,
+      "is_favourite": false,
       "viewed_at": "2025-04-12T16:21:16.778Z",
       "created_at": "2025-03-25T11:00:00Z"
     },
@@ -92,7 +92,7 @@
       "id": "6",
       "name": "Lemon Ginger Iced",
       "description": "Chanh gừng đá lạnh",
-      "price": 2.49,
+      "price": 25,
       "image": "https://i.pinimg.com/474x/c3/89/81/c38981d19a82e6093fbc2cfb85ad01f1.jpg",
       "category_id": "2",
       "is_hot": true,
@@ -203,24 +203,27 @@
           "quantity": 1
         }
       ]
-    }
-  ],
-  "cart": [
-    {
-      "id": "c475",
-      "user_id": "1744464593938",
-      "product_id": "1",
-      "quantity": 3,
-      "price": 1.99
     },
     {
-      "id": "9761",
+      "id": "e5ad",
       "user_id": "1744464593938",
-      "product_id": "2",
-      "quantity": 1,
-      "price": 3.49
+      "total_price": 150,
+      "status": "Đang xử lý",
+      "created_at": "2025-04-13T09:06:29.507Z",
+      "nameOrder": "Hoang Tien Dat",
+      "addressOrder": "Cau Giay, Ha Noi",
+      "phoneOrder": "0978965123",
+      "order": [
+        {
+          "image": "https://i.pinimg.com/736x/74/c5/02/74c502c8f8c0b6598b7da798273b15b2.jpg",
+          "name": "Apple",
+          "price": 25,
+          "quantity": 6
+        }
+      ]
     }
   ],
+  "cart": [],
   "comments": [
     {
       "id": "1",
@@ -307,6 +310,12 @@
       "user_id": "1",
       "message": "Bạn đã đặt hàng thành công !!",
       "created_at": "2025-04-12T16:59:46.381Z"
+    },
+    {
+      "id": "8da7",
+      "user_id": "1744464593938",
+      "message": "Bạn đã đặt hàng thành công !!",
+      "created_at": "2025-04-13T09:06:29.522Z"
     }
   ]
 }

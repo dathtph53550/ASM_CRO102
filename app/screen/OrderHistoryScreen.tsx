@@ -46,7 +46,13 @@ const OrderHistoryScreen = () => {
       setLoading(true);
       if (user?.id) {
         const response = await axios.get(`http://localhost:3000/orders?user_id=${user.id}`);
-        setOrders(response.data as Order[]);
+        // Sort orders by created_at date, newest first
+        const responseData = response.data as Order[];
+        const sortedOrders = [...responseData];
+        sortedOrders.sort((a, b) => {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+        setOrders(sortedOrders);
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -130,7 +136,7 @@ const OrderHistoryScreen = () => {
                     <Text style={styles.productName}>{orderItem.name}</Text>
                     <Text style={styles.productQuantity}>SL: {orderItem.quantity}</Text>
                   </View>
-                  <Text style={styles.productPrice}>${orderItem.price}</Text>
+                  <Text style={styles.productPrice}>{orderItem.price.toFixed(3)} đ</Text>
                 </View>
               ))}
             </View>
@@ -152,7 +158,7 @@ const OrderHistoryScreen = () => {
               </View>
               <View style={[styles.summaryRow, styles.totalRow]}>
                 <Text style={styles.totalLabel}>Tổng tiền:</Text>
-                <Text style={styles.totalValue}>${item.total_price.toFixed(2)}</Text>
+                <Text style={styles.totalValue}>${item.total_price.toFixed(3)}</Text>
               </View>
             </View>
           </View>

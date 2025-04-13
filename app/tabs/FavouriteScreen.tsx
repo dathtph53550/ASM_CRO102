@@ -101,13 +101,13 @@ const FavoritesScreen = () => {
       {favoriteProducts.length === 0 ? (
         <View style={[styles.emptyContainer, { backgroundColor: theme.backgroundColor }]}>
           <Feather name="heart" size={50} color={isDarkMode ? '#555' : '#E0E0E0'} />
-          <Text style={[styles.emptyText, { color: theme.textColor }]}>No favorite items yet</Text>
-          <Text style={[styles.emptySubText, { color: theme.textColor }]}>Items you mark as favorites will appear here</Text>
+          <Text style={[styles.emptyText, { color: theme.textColor }]}>Không có sản phẩm yêu thích</Text>
+          <Text style={[styles.emptySubText, { color: theme.textColor }]}>Sản phẩm bạn yêu thích sẽ xuất hiện ở đây</Text>
           <TouchableOpacity 
             style={[styles.browseButton, { backgroundColor: theme.primaryColor }]}
             onPress={() => navigation.navigate('HomeScreen' as never)}
           >
-            <Text style={styles.browseButtonText}>Browse Products</Text>
+            <Text style={styles.browseButtonText}>Xem sản phẩm</Text>
           </TouchableOpacity>
         </View>
       ) : (
