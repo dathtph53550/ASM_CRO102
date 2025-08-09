@@ -3,11 +3,12 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "json-server --host 0.0.0.0 --watch db.json --port $PORT",
+    "start": "json-server --host 0.0.0.0 --watch db.json --port $PORT --cors",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "build": "expo export --platform web",
     "test": "jest --watchAll",
     "lint": "expo lint"
   },
@@ -16,6 +17,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
+    "@lottiefiles/dotlottie-react": "^0.6.5",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/drawer": "^7.3.9",
