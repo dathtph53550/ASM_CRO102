@@ -1,19 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
-  SafeAreaView,
+  Alert,
   ActivityIndicator
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import { useUser } from '../context/UserContext';
-import { useFocusEffect } from '@react-navigation/native';
 
 interface OrderItem {
   image: string;
@@ -34,39 +30,31 @@ interface Order {
   order: OrderItem[];
 }
 
-const OrderHistoryScreen = () => {
-  const navigation = useNavigation();
-  const { user } = useUser();
+const OrderManagement = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
-  const fetchOrders = useCallback(async () => {
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
     try {
       setLoading(true);
-      if (user?.id) {
-        const response = await axios.get(`http://localhost:3000/orders?user_id=${user.id}`);
-        // Sort orders by created_at date, newest first
-        const responseData = response.data as Order[];
-        const sortedOrders = [...responseData];
-        sortedOrders.sort((a, b) => {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        });
-        setOrders(sortedOrders);
-      }
+      const response = await axios.get('http://localhost:3000/orders');
+      const sortedOrders = [...response.data] as Order[];
+      sortedOrders.sort((a, b) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+      setOrders(sortedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
+      Alert.alert('Lỗi', 'Không thể tải danh sách đơn hàng');
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrders();
-      return () => {};
-    }, [fetchOrders])
-  );
+  };
 
   const toggleOrderExpand = (orderId: string) => {
     if (expandedOrderId === orderId) {
@@ -94,6 +82,63 @@ const OrderHistoryScreen = () => {
       default:
         return '#757575'; // Grey
     }
+  };
+
+  const handleUpdateStatus = (order: Order, newStatus: string) => {
+    Alert.alert(
+      'Cập nhật trạng thái',
+      `Xác nhận cập nhật trạng thái đơn hàng #${order.id.substring(0, 4)} thành "${newStatus}"?`,
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel'
+        },
+        {
+          text: 'Cập nhật',
+          onPress: async () => {
+            try {
+              await axios.patch(`http://localhost:3000/orders/${order.id}`, {
+                status: newStatus
+              });
+              
+              setOrders(orders.map(o => {
+                if (o.id === order.id) {
+                  return { ...o, status: newStatus };
+                }
+                return o;
+              }));
+              
+              Alert.alert('Thành công', 'Đã cập nhật trạng thái đơn hàng');
+            } catch (error) {
+              console.error('Error updating order status:', error);
+              Alert.alert('Lỗi', 'Không thể cập nhật trạng thái đơn hàng');
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const renderStatusOptions = (order: Order) => {
+    const statuses = ['Đang xử lý', 'Đang giao hàng', 'Hoàn thành', 'Đã hủy'];
+    return (
+      <View style={styles.statusOptions}>
+        {statuses.map((status) => (
+          <TouchableOpacity
+            key={status}
+            style={[
+              styles.statusOption,
+              { backgroundColor: getStatusColor(status) },
+              order.status === status && styles.currentStatusOption
+            ]}
+            onPress={() => handleUpdateStatus(order, status)}
+            disabled={order.status === status}
+          >
+            <Text style={styles.statusOptionText}>{status}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
   };
 
   const renderOrderItem = ({ item }: { item: Order }) => {
@@ -124,28 +169,9 @@ const OrderHistoryScreen = () => {
 
         {isExpanded && (
           <View style={styles.orderDetails}>
-            <View style={styles.orderItems}>
-              {item.order.map((orderItem, index) => (
-                <View key={index} style={styles.orderItem}>
-                  <Image
-                    source={{ uri: orderItem.image }}
-                    style={styles.productImage}
-                    defaultSource={require('../../assets/images/react-logo.png')}
-                  />
-                  <View style={styles.productInfo}>
-                    <Text style={styles.productName}>{orderItem.name}</Text>
-                    <Text style={styles.productQuantity}>SL: {orderItem.quantity}</Text>
-                  </View>
-                  <Text style={styles.productPrice}>{orderItem.price.toFixed(3)} đ</Text>
-                </View>
-              ))}
-            </View>
-
-            <View style={styles.divider} />
-
             <View style={styles.orderSummary}>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Người nhận:</Text>
+                <Text style={styles.summaryLabel}>Người đặt:</Text>
                 <Text style={styles.summaryValue}>{item.nameOrder}</Text>
               </View>
               <View style={styles.summaryRow}>
@@ -156,11 +182,18 @@ const OrderHistoryScreen = () => {
                 <Text style={styles.summaryLabel}>Số điện thoại:</Text>
                 <Text style={styles.summaryValue}>{item.phoneOrder}</Text>
               </View>
-              <View style={[styles.summaryRow, styles.totalRow]}>
-                <Text style={styles.totalLabel}>Tổng tiền:</Text>
-                <Text style={styles.totalValue}>{item.total_price.toFixed(3)} đ</Text>
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>Tổng tiền:</Text>
+                <Text style={styles.summaryValue}>{item.total_price.toFixed(3)} đ</Text>
+              </View>
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>Số sản phẩm:</Text>
+                <Text style={styles.summaryValue}>{item.order.length}</Text>
               </View>
             </View>
+
+            <Text style={styles.statusChangeTitle}>Thay đổi trạng thái:</Text>
+            {renderStatusOptions(item)}
           </View>
         )}
       </View>
@@ -168,34 +201,25 @@ const OrderHistoryScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Feather name="arrow-left" size={24} color="#181725" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Lịch Sử Đặt Hàng</Text>
-        <View style={{ width: 24 }} />
+        <Text style={styles.headerTitle}>Quản Lý Đặt Hàng</Text>
       </View>
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#53B175" />
-        </View>
-      ) : orders.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Feather name="shopping-bag" size={60} color="#E0E0E0" />
-          <Text style={styles.emptyText}>Bạn chưa có đơn hàng nào</Text>
+          <ActivityIndicator size="large" color="#FF6347" />
         </View>
       ) : (
         <FlatList
           data={orders}
-          keyExtractor={(item) => item.id}
           renderItem={renderOrderItem}
-          contentContainerStyle={styles.listContainer}
+          keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -205,37 +229,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F8',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: '#E0E0E0',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#181725',
   },
+  listContainer: {
+    padding: 16,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#757575',
-    marginTop: 20,
-  },
-  listContainer: {
-    padding: 16,
   },
   orderCard: {
     backgroundColor: '#FFFFFF',
@@ -283,45 +294,8 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F9F9F9',
   },
-  orderItems: {
-    marginBottom: 16,
-  },
-  orderItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  productImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  productInfo: {
-    flex: 1,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#181725',
-  },
-  productQuantity: {
-    fontSize: 13,
-    color: '#7C7C7C',
-    marginTop: 2,
-  },
-  productPrice: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#181725',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E0E0E0',
-    marginVertical: 12,
-  },
   orderSummary: {
-    marginTop: 8,
+    marginBottom: 16,
   },
   summaryRow: {
     flexDirection: 'row',
@@ -335,25 +309,34 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 14,
     color: '#181725',
-    maxWidth: '60%',
-    textAlign: 'right',
+    fontWeight: '500',
   },
-  totalRow: {
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  totalLabel: {
-    fontSize: 16,
+  statusChangeTitle: {
+    fontSize: 14,
     fontWeight: 'bold',
+    marginBottom: 8,
     color: '#181725',
   },
-  totalValue: {
-    fontSize: 16,
+  statusOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  statusOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  currentStatusOption: {
+    borderWidth: 2,
+    borderColor: '#000',
+  },
+  statusOptionText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
-    color: '#53B175',
+    fontSize: 12,
   },
 });
 
-export default OrderHistoryScreen;
+export default OrderManagement;

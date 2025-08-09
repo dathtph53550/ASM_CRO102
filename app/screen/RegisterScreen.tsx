@@ -99,7 +99,7 @@ export default function RegisterScreen() {
           style={styles.logo}
         />
 
-        <Text style={styles.title}>Register</Text>
+        <Text style={styles.title}>Đăng ký</Text>
         <Text style={styles.subtitle}>Tạo tài khoản để tiếp tục</Text>
 
         <View style={styles.form}>
@@ -164,10 +164,10 @@ export default function RegisterScreen() {
           </View>
 
           <Text style={styles.termsText}>
-            By continuing you agree to our{' '}
-            <Text style={styles.termsLink}>Terms of Service</Text>
+            Bằng việc tiếp tục, bạn đồng ý với{' '}
+            <Text style={styles.termsLink}>Điều khoản dịch vụ</Text>
             {' '}and{' '}
-            <Text style={styles.termsLink}>Privacy Policy</Text>.
+            <Text style={styles.termsLink}>Chính sách bảo mật</Text>.
           </Text>
 
           <TouchableOpacity 
@@ -178,14 +178,14 @@ export default function RegisterScreen() {
             {isLoading ? (
               <ActivityIndicator color="#FFF" />
             ) : (
-              <Text style={styles.signUpButtonText}>Register</Text>
+              <Text style={styles.signUpButtonText}>Đăng ký</Text>
             )}
           </TouchableOpacity>
 
           <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account? </Text>
+            <Text style={styles.loginText}>Đã có tài khoản? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.loginLink}>Login</Text>
+              <Text style={styles.loginLink}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>
         </View>

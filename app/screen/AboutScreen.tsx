@@ -8,7 +8,6 @@ const PhoneInfoScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Nút Back */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
-    paddingTop: 50, // Dành chỗ cho nút back
+    paddingTop: 50, 
   },
   backButton: {
     position: 'absolute',

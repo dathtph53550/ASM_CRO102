@@ -60,8 +60,8 @@ export default function NotificationScreen({ navigation }: NotificationScreenPro
         style={styles.emptyImage}
         defaultSource={require('../../assets/images/empty-notification.png')}
       />
-      <Text style={styles.emptyTitle}>No Notifications Yet</Text>
-      <Text style={styles.emptySubtitle}>You don't have any notifications at the moment.</Text>
+      <Text style={styles.emptyTitle}>Không có thông báo</Text>
+      <Text style={styles.emptySubtitle}>Bạn không có thông báo nào</Text>
     </View>
   );
 
@@ -71,7 +71,7 @@ export default function NotificationScreen({ navigation }: NotificationScreenPro
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Feather name="arrow-left" size={24} color="#181725" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <Text style={styles.headerTitle}>Thông báo</Text>
         <View style={{ width: 24 }} />
       </View>
       

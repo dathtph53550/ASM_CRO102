@@ -24,6 +24,8 @@ import SearchScreen from './screen/SearchScreen';
 import CategoryProductsScreen from './screen/CategoryProductsScreen';
 import { Feather } from '@expo/vector-icons';
 import { UserProvider } from './context/UserContext';
+import AdminScreen from './screen/AdminScreen';
+
 
 // Redux imports
 import { Provider } from 'react-redux';
@@ -185,6 +187,7 @@ console.log("CategoryProductsScreen:", CategoryProductsScreen);
             <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen}/>
             <Stack.Screen name="SearchScreen" component={SearchScreen}/>
             <Stack.Screen name="CategoryProductsScreen" component={CategoryProductsScreen}/>
+            <Stack.Screen name="AdminScreen" component={AdminScreen}/>
           </Stack.Navigator>
         </ThemeProvider>
       </UserProvider>

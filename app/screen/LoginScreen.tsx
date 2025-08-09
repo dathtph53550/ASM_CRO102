@@ -72,8 +72,8 @@ export default function LoginScreen() {
           style={styles.logo}
         />
 
-        <Text style={[styles.title, { color: theme.textColor }]}>Login</Text>
-        <Text style={[styles.subtitle, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Enter your email and password</Text>
+        <Text style={[styles.title, { color: theme.textColor }]}>Đăng nhập</Text>
+        <Text style={[styles.subtitle, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Nhập email và mật khẩu</Text>
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
@@ -117,7 +117,7 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={[styles.forgotPasswordText, { color: isDarkMode ? '#999' : '#181725' }]}>Forgot Password?</Text>
+            <Text style={[styles.forgotPasswordText, { color: isDarkMode ? '#999' : '#181725' }]}>Quên mật khẩu?</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
@@ -133,9 +133,9 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <View style={styles.signupContainer}>
-            <Text style={[styles.signupText, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Don't have an account? </Text>
+            <Text style={[styles.signupText, { color: isDarkMode ? '#999' : '#7C7C7C' }]}>Chưa có tài khoản? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.signupLink}>Register</Text>
+              <Text style={styles.signupLink}>Đăng ký</Text>
             </TouchableOpacity>
           </View>
           

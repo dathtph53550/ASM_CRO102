@@ -41,12 +41,10 @@ export const cartSlice = createSlice({
   },
 });
 
-// Helper function to calculate total amount
 const calculateTotal = (items) => {
   return items.reduce((total, item) => total + (item.price * item.quantity), 0);
 };
 
-// Action creators
 export const { 
   setCartItems, 
   addCartItem, 
@@ -56,7 +54,6 @@ export const {
   setError 
 } = cartSlice.actions;
 
-// Thunk actions
 export const fetchCart = (userId) => async (dispatch) => {
   try {
     dispatch(setLoading(true));

@@ -39,7 +39,6 @@ export const productSlice = createSlice({
   },
 });
 
-// Action creators
 export const { 
   setAllProducts, 
   setHotProducts, 
@@ -50,7 +49,6 @@ export const {
   setError 
 } = productSlice.actions;
 
-// Thunk actions
 export const loadAllProducts = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));

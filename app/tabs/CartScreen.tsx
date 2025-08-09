@@ -15,6 +15,8 @@ import { fetchCartItems, updateCartItemQuantity, removeCartItem, CartItem, addTo
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../components/ThemeProvider';
+import Lottie from 'lottie-react-native';
+import emptyCartAnimation from '../../assets/images/emptyCart.json'; // Adjust the path as necessary
 
 interface CartItemWithDetails extends CartItem {
   name: string;
@@ -163,7 +165,7 @@ const CartScreen = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
-      <Text style={[styles.screenTitle, { color: theme.textColor }]}>My Cart</Text>
+      <Text style={[styles.screenTitle, { color: theme.textColor }]}>Giỏ Hàng</Text>
       
       {isLoading ? (
         <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
@@ -177,11 +179,16 @@ const CartScreen = () => {
           </TouchableOpacity>
         </View>
       ) : cartItems.length === 0 ? (
+        // <View style={[styles.emptyContainer, { backgroundColor: theme.backgroundColor }]}>
+        //   <Feather name="shopping-cart" size={60} color={isDarkMode ? '#555' : '#CCCCCC'} />
+        //   <Text style={[styles.emptyText, { color: theme.textColor }]}>Giỏ hàng của bạn đang trống</Text>
+        //   <Text style={[styles.emptySubtext, { color: theme.textColor }]}>Hãy thêm sản phẩm vào giỏ hàng</Text>
+        // </View>
         <View style={[styles.emptyContainer, { backgroundColor: theme.backgroundColor }]}>
-          <Feather name="shopping-cart" size={60} color={isDarkMode ? '#555' : '#CCCCCC'} />
+          <Lottie source={emptyCartAnimation} autoPlay loop style={styles.emptyAnimation} />
           <Text style={[styles.emptyText, { color: theme.textColor }]}>Giỏ hàng của bạn đang trống</Text>
           <Text style={[styles.emptySubtext, { color: theme.textColor }]}>Hãy thêm sản phẩm vào giỏ hàng</Text>
-        </View>
+      </View>
       ) : (
         <>
           <View style={[styles.cartListContainer, { backgroundColor: theme.backgroundColor }]}>
@@ -414,6 +421,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  emptyAnimation: {
+    width: 150, // Adjust size as needed
+    height: 150,
+    marginBottom: 20,
   },
 });
 

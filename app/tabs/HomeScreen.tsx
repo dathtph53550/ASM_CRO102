@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, Dimensions, ActivityIndicator, Platform, SafeAreaView, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, Dimensions, ActivityIndicator, Platform, SafeAreaView, Alert,Animated} from 'react-native';
 import { useTheme } from '../components/ThemeProvider';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
@@ -24,10 +24,45 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const bannerRef = useRef<FlatList>(null);
   const { user } = useUser();
   const { theme } = useTheme();
+
+  const bellShakeAnimation = useRef(new Animated.Value(0)).current;
   
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const shakeInterval = setInterval(() => {
+        Animated.sequence([
+          Animated.timing(bellShakeAnimation, {
+            toValue: 0.3,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(bellShakeAnimation, {
+            toValue: -0.3,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(bellShakeAnimation, {
+            toValue: 0.3,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(bellShakeAnimation, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true,
+          })
+        ]).start();
+      }, 1500);
+      
+      return () => clearInterval(shakeInterval);
+    }
+  }, [notifications, bellShakeAnimation]);
+  
+
 
   const loadInitialData = async () => {
     setIsLoading(true);
@@ -79,7 +114,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const loadBanners = async () => {
     try {
       const data = await fetchBanners();
-      // Filter out any invalid banners to prevent toString errors
       setBanners(data.filter(banner => banner && (banner.id !== undefined || banner.id_banner !== undefined)));
     } catch (error) {
       console.error('Error loading banners:', error);
@@ -345,7 +379,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                   Tìm kiếm sản phẩm
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity 
+              {/* <TouchableOpacity 
                 style={styles.notificationContainer}
                 onPress={() => navigation.navigate('NotificationScreen')}
               >
@@ -357,7 +391,30 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                     </Text>
                   </View>
                 )}
+              </TouchableOpacity> */}
+              <TouchableOpacity 
+                style={styles.notificationContainer}
+                onPress={() => navigation.navigate('NotificationScreen')}
+              >
+                <Animated.View
+                  style={{
+                    transform: [{ rotate: bellShakeAnimation.interpolate({
+                      inputRange: [-1, 1],
+                      outputRange: ['-30deg', '30deg']
+                    })}]
+                  }}
+                >
+                  <Feather name="bell" size={24} color={theme.textColor} />
+                  {notifications.length > 0 && (
+                    <View style={styles.notificationBadge}>
+                      <Text style={styles.notificationBadgeText}>
+                        {notifications.length > 9 ? '9+' : notifications.length}
+                      </Text>
+                    </View>
+                  )}
+                </Animated.View>
               </TouchableOpacity>
+
             </View>
 
             <View style={styles.bannerSlideContainer}>

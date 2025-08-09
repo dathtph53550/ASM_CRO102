@@ -13,7 +13,6 @@ export const notificationSlice = createSlice({
   initialState,
   reducers: {
     setNotifications: (state, action) => {
-      // Sort notifications by creation date, most recent first
       const sortedNotifications = [...action.payload].sort((a, b) => {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
@@ -47,7 +46,6 @@ export const notificationSlice = createSlice({
   },
 });
 
-// Action creators
 export const { 
   setNotifications, 
   addNotification, 
@@ -57,7 +55,6 @@ export const {
   setError 
 } = notificationSlice.actions;
 
-// Thunk actions
 export const loadNotifications = (userId) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
