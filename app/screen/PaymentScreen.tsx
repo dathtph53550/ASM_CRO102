@@ -64,7 +64,7 @@ const PaymentScreen = () => {
       };
       
       // Save order to database
-      await axios.post('http://localhost:3000/orders', orderData);
+      await axios.post('https://asm-cro102.onrender.com/orders', orderData);
       
       // Create notification for successful order
       const notificationData = {
@@ -72,14 +72,14 @@ const PaymentScreen = () => {
         message: "Bạn đã đặt hàng thành công !!",
         created_at: new Date().toISOString()
       };
-      await axios.post('http://localhost:3000/notification', notificationData);
+      await axios.post('https://asm-cro102.onrender.com/notification', notificationData);
       
       // Clear cart items
       if (user?.id) {
-        const userCartItems = await axios.get(`http://localhost:3000/cart?user_id=${user.id}`);
+        const userCartItems = await axios.get(`https://asm-cro102.onrender.com/cart?user_id=${user.id}`);
         const cartData = userCartItems.data as Array<{id: string | number}>;
         for (const item of cartData) {
-          await axios.delete(`http://localhost:3000/cart/${item.id}`);
+          await axios.delete(`https://asm-cro102.onrender.com/cart/${item.id}`);
         }
       }
       

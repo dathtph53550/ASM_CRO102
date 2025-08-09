@@ -49,7 +49,7 @@ export default function RegisterScreen() {
 
     try {
       // Check if email already exists
-      const response = await fetch('http://localhost:3000/users?email=' + email);
+      const response = await fetch('https://asm-cro102.onrender.com/users?email=' + email);
       const users = await response.json();
 
       if (users.length > 0) {
@@ -66,7 +66,7 @@ export default function RegisterScreen() {
         theme: 'light'
       };
 
-      const createResponse = await fetch('http://localhost:3000/users', {
+      const createResponse = await fetch('https://asm-cro102.onrender.com/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ export interface Notification {
   created_at: string;
 }
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://asm-cro102.onrender.com';
 
 export async function changePassword(userId: string | number, currentPassword: string, newPassword: string): Promise<boolean> {
   try {

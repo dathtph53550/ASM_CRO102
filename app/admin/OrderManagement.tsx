@@ -42,8 +42,8 @@ const OrderManagement = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/orders');
-      const sortedOrders = [...response.data] as Order[];
+      const response = await axios.get<Order[]>('https://asm-cro102.onrender.com/orders');
+      const sortedOrders = [...response.data];
       sortedOrders.sort((a, b) => {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
@@ -97,7 +97,7 @@ const OrderManagement = () => {
           text: 'Cập nhật',
           onPress: async () => {
             try {
-              await axios.patch(`http://localhost:3000/orders/${order.id}`, {
+              await axios.patch(`https://asm-cro102.onrender.com/orders/${order.id}`, {
                 status: newStatus
               });
               

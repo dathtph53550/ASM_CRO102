@@ -5,7 +5,7 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:3000/products');
+      const response = await axios.get('https://asm-cro102.onrender.com/products');
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể tải danh sách sản phẩm');
@@ -17,7 +17,7 @@ export const fetchCategories = createAsyncThunk(
   'products/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:3000/categories');
+      const response = await axios.get('https://asm-cro102.onrender.com/categories');
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể tải danh sách danh mục');
@@ -29,7 +29,7 @@ export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:3000/products/${id}`);
+      await axios.delete(`https://asm-cro102.onrender.com/products/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue('Không thể xóa sản phẩm');
@@ -50,7 +50,7 @@ export const addProduct = createAsyncThunk(
         created_at: new Date().toISOString()
       };
       
-      const response = await axios.post('http://localhost:3000/products', newProduct);
+      const response = await axios.post('https://asm-cro102.onrender.com/products', newProduct);
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể thêm sản phẩm');
@@ -62,7 +62,7 @@ export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async (product, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:3000/products/${product.id}`, product);
+      const response = await axios.put(`https://asm-cro102.onrender.com/products/${product.id}`, product);
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể cập nhật sản phẩm');

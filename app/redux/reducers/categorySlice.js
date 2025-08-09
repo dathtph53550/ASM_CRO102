@@ -5,7 +5,7 @@ export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:3000/categories');
+      const response = await axios.get('https://asm-cro102.onrender.com/categories');
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể tải danh sách danh mục');
@@ -17,7 +17,7 @@ export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:3000/categories/${id}`);
+      await axios.delete(`https://asm-cro102.onrender.com/categories/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue('Không thể xóa danh mục');
@@ -29,7 +29,7 @@ export const addCategory = createAsyncThunk(
   'categories/addCategory',
   async (categoryData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:3000/categories', categoryData);
+      const response = await axios.post('https://asm-cro102.onrender.com/categories', categoryData);
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể thêm danh mục');
@@ -41,7 +41,7 @@ export const updateCategory = createAsyncThunk(
   'categories/updateCategory',
   async (category, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:3000/categories/${category.id}`, category);
+      const response = await axios.put(`https://asm-cro102.onrender.com/categories/${category.id}`, category);
       return response.data;
     } catch (error) {
       return rejectWithValue('Không thể cập nhật danh mục');

@@ -45,7 +45,7 @@ const OrderHistoryScreen = () => {
     try {
       setLoading(true);
       if (user?.id) {
-        const response = await axios.get(`http://localhost:3000/orders?user_id=${user.id}`);
+        const response = await axios.get(`https://asm-cro102.onrender.com/orders?user_id=${user.id}`);
         // Sort orders by created_at date, newest first
         const responseData = response.data as Order[];
         const sortedOrders = [...responseData];
